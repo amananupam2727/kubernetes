@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskapp
+  namespace: learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskapp
+  template:
+    metadata:
+      labels:
+        app: taskapp
+    spec:
+      containers:
+        - name: taskapp
+          image: taskapp:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PGHOST
+              value: postgres
+            - name: PGDATABASE
+              value: taskdb
+            - name: PGUSER
+              value: taskapp
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taskapp-secret
+                  key: PGPASSWORD
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            timeoutSeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskapp
+  namespace: learning
+spec:
+  selector:
+    app: taskapp
+  ports:
+    - port: 80
+      targetPort: 8000

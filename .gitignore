@@ -1,0 +1,22 @@
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*secret*.yaml
+*secret*.yml
+.kube/
+.aws/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
