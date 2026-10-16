@@ -1,6 +1,3 @@
-cd ~/devops
-
-cat > .github/workflows/ci.yml <<'EOF'
 name: Taskapp CI
 
 on:
