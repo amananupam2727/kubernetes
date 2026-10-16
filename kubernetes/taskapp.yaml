@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: taskapp
-          image: taskapp:v2
+          image: taskapp:v3-threads
           imagePullPolicy: Never
           ports:
             - containerPort: 8000

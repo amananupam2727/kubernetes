@@ -8,4 +8,4 @@ COPY app.py .
 COPY templates ./templates
 USER 10001:10001
 EXPOSE 8000
-CMD ["gunicorn", "--bind=0.0.0.0:8000", "--workers=2", "--access-logfile=-", "app:app"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "--workers=2", "--worker-class=gthread", "--threads=4", "--access-logfile=-", "--error-logfile=-", "app:app"]
