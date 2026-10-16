@@ -13,10 +13,12 @@ spec:
       labels:
         app: taskapp
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: taskapp
-          image: taskapp:v3-threads
-          imagePullPolicy: Never
+          image: ghcr.io/amananupam2727/taskapp:c8d1dcb985fcc668157dbc9b960863e0223947b8
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           env:
