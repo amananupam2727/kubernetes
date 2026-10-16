@@ -132,4 +132,3 @@ jobs:
             docker logs taskapp-ci
             docker rm -f taskapp-ci
           fi
-EOF
