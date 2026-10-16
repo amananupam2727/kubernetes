@@ -52,7 +52,7 @@ def complete_task(task_id):
 
 @app.get("/healthz")
 def health():
-    return {"status": "broken"}
+    return {"status": "alive"}
 
 
 @app.get("/readyz")
