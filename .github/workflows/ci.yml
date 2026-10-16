@@ -92,6 +92,11 @@ jobs:
           done
 
           python3 scripts/smoke_test.py --url http://127.0.0.1:8080
+      - name: Build application image
+        run: |
+          docker build \
+            --tag taskapp:${{ github.sha }} \
+            ./taskapp
 
       - name: Show application logs on failure
         if: failure()
