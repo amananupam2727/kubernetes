@@ -1,3 +1,6 @@
+cd ~/devops
+
+cat > .github/workflows/ci.yml <<'EOF'
 name: Taskapp CI
 
 on:
@@ -92,12 +95,44 @@ jobs:
           done
 
           python3 scripts/smoke_test.py --url http://127.0.0.1:8080
+
       - name: Build application image
         run: |
           docker build \
             --tag taskapp:${{ github.sha }} \
             ./taskapp
 
+      - name: Test application image
+        run: |
+          docker run -d \
+            --name taskapp-ci \
+            --network host \
+            -e PGHOST \
+            -e PGPORT \
+            -e PGDATABASE \
+            -e PGUSER \
+            -e PGPASSWORD \
+            taskapp:${{ github.sha }}
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --max-time 2 \
+              http://127.0.0.1:8000/readyz > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          python3 scripts/smoke_test.py --url http://127.0.0.1:8000
+
       - name: Show application logs on failure
         if: failure()
         run: cat /tmp/taskapp.log 2>/dev/null || true
+
+      - name: Show container logs and clean up
+        if: always()
+        run: |
+          if docker container inspect taskapp-ci > /dev/null 2>&1; then
+            docker logs taskapp-ci
+            docker rm -f taskapp-ci
+          fi
+EOF
